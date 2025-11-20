@@ -1,0 +1,95 @@
+---------------- 2025xxxx ----------------
+
+¶  suite à la double commande (DI-RFAI) des 256Go de RAM ECC pour la station #StationTV, le matériel a été visiblement été reçu sur la période fin juillet à mi-septembre. Les BLs ont été a priori géré par le service informatique. Un nouveau ticket Pal n°100769 a été ouvert pour demande d'installation de la RAM sur la machine DELL 5820 
+(EPU-2019006288) avec association de l'étudiant D. Brisson.
+
+----------------
+Ticket Pal n°97719	128 Go 	Budget RFAI	livré le 16/09  (S. Beaufils)	
+ticket Pal n°98695	128 Go	Budget DI 	livré le 22/07  (V. Lasnier). ¶
+
+---------------- 20250718 ----------------
+
+¶ suite à la commande de la RAM 256 Go ECC pour la machine DELL 5820 #StationTV, des emails d'information ont été envoyés à A. Soulet, N. Friburger, F. Rayar et N. Ragot le 18/07. Il a été évoqué que la solution de transcription #VideoCapture en l'état était suffisant pour les travaux recherche du LIFAT, permettant la transcription de larges bases nonobstant qqs semaines de traitement. Le passage à 256 Go permettra de gagner en performance et stabilité sur les hauts modèles {small, medium, large}. Il ne sera pas prévu de passage à plus haute échelle (traitement sur GPU ou cluster). ¶
+
+---------------- 20250718 ----------------
+
+¶ Le ticket Pal n°97719 pour l'achat de la RAM #StationTV sur budget recherche a été màj les 07 et 08/07 avec association de S. Hemon, A. Simon, V. Lasnier pour lancement de la commande RFAI (avec emails associés). Le devis a été joint au ticket. Il a été mentionné que la commande serait engagée à la réouverture de SIFAC (à compter du 08/07). Le devis a été signé par H. Cardot > 08/07 (reçu le 15/07). Le panier a été créé sur le site Conrad le 10/07 puis màj le 16/07. Il a été noté une augmentation du tarif de de 652€ HT à 659 € HT (plus frais de port et TVA). Le panier a été traité par V. Lasnier et le BC envoyé à Conrad le 17/07 (avec précision d'une date de livraison >18/08 à la re-ouverture). ¶
+
+---------------- 20250718 ----------------
+
+¶ Le ticket Pal n°98695 pour l'achat de la RAM #StationTV sur budget enseignement a été ouvert le 09/07. Le devis a été signé le même jour par N. Ragot (le 09/07). Le BC N° 2015011610 a été établi le 10/07 et diffusé à Conrad (avec précision d'une date de livraison >18/08 à la re-ouverture). ¶
+
+---------------- 20250718 ----------------
+
+¶ suite à la recherche des solutions RAM #StationTV (DELL vs. Conrad cf. 20250704), il a été noté que la solution Conrad représentait une réduction d'environ 55% du tarif (cf. ci-dessous). Au-delà, l'achat DELL ne peut être mise en œuvre à date compte-tenu des contraintes de marché (i.e. les barrettes DELL 64 Go sont à >500€ HT / unité soit un achat en investissement, hors après vérification auprès de S. Hemon, V. Lasnier et A. Simon sur la semaine du 16/06 le marché investissement est clôturé pour 2025). Il a été évoqué par S. Beaufils que la RAM DDR4 arrivait en fin de vie, et qu'il était donc conseillé d'engager l'achat en configuration 256 Go dès-à-présent. 
+
+Compte-tenu de ces éléments, une demande de financement a été envoyé auprès de P. Gaucher, R. Raveaux et N. Ragot le 23/06 pour un achat en 50% pédagogique 50% recherche de la RAM Conrad 256 Go (1,3k€ HT). Suite à la demande, le devis Conrad a été diffusé à R. Raveaux et N. Ragot le 01/07. Les accords de financement RFAI et DI ont été reçu les 03/07 et 09/07 (après relance le 07/07 de R. Raveaux et N. Ragot), respectivement. Un deuxième ticket Pal n°98695 a été ouvert pour le besoin de la commande sur budget enseignement, en complément du ticket Pal n°97719 pour la commande sur budget recherche.
+
+Fournisseur	Capacité		Type			Tarif		Mo/€ HT
+Conrad		256 Go	 (4 x64)	DDR4/ECC		1304 HT		201
+DELL					DDR4/RDIMM		2270€ HT	115,5	¶
+
+---------------- 20250704 ----------------
+
+¶ après échange avec S. Beaufils le 19/06, il a été évoqué que la RAM DDR4 (RDIMM/ECC) pour la màj de la machine DELL 5820 #StationTV était un produit assez standard. Il a fortement été recommandé de chercher chez un fournisseur autre que DELL (e.g, LDLC pro, Conrad), compte-tenu des tarifs retournés (cf. ci-dessous). Après recherche les 23/06 et 26/06, les produits [1,2,3] ont été identifiés (30% à 55% moins cher). Il a été retourné que le produit [3] présentait le meilleur compromis capacité (Mo) / coût (€) (180 Mo/€ vs. 150 Mo/€). De plus, les produits [1,2] ne semblent pas complétement compatible avec la machine DELL 5820.  Sur cette base, la configuration c. à 256 Go envisagée (cf. ci-dessus) pourrait s'acquérir en deux temps via le produit [3] à 2 x 650€ HT environ. Le ticket Pal n°97719 a été màj avec ces informations.
+
+Ref	Capacité		Type		Tarif		Mo/€ HT		Configuration
+[1]	32 Go    (1x32)		DDR4/ECC	218€ HT		150,3		Na
+[2]	64 Go    (1x64)		DDR4/ECC	391€ HT		167,6		Na
+[2]	128 Go	 (2x64)		DDR4/ECC	782€ HT		167,6		c/2
+[2]	256 Go	 (4x64)		DDR4/ECC	1564€ HT	167,6		c
+[3]	64 Go	 (1x64)		DDR4/ECC	326€ HT		201		Na
+[3]	128 Go	 (2x64)		DDR4/ECC	652€ HT		201		c/2
+[3]	256 Go	 (4x64)		DDR4/ECC	1304€ HT	201		c
+
+[1] Kingston Server Premier 32 Go DDR4 3200 MHz ECC Registered CL22 2Rx4 
+https://www.ldlc.pro/fiche/PB00666468.html
+[2] Kingston Server Premier 64 Go DDR4 3200 MHz ECC Registered CL22 2Rx4
+https://www.ldlc.pro/fiche/PB00666471.html 
+[3] Kingston KTD-PE432/64G Module mémoire pour PC DDR4 64 GB 
+ECC 3200 MHz DIMM 288 broches CL22 KTD-PE432/64G
+https://www.conrad.fr/fr/p/kingston-ktd-pe432-64g-module-memoire-pour-pc-ddr4-64-gb-1-x-64-gb-ecc-3200-mhz-dimm-288-broches-cl22-ktd-pe432-64g-2823381.html ¶
+
+---------------- 20250704 ----------------
+
+¶ suite aux test de trashing mémoire de T. Bordeau sur le service de transcription à l'échelle (période fin mai / début Juin), il a été recommandé d'augmenter la capacité RAM de la machine DELL 5820 à 128 Go (support 30 threads / whisper_small) ou 256 Go (support 30 threads / whisper_medium "et whisper_large?") #StationTV. Des échanges ont été engagés avec DELL et le service informatique les 10, 12, 16 et 17 /06 (Y. Gorends, C. Barbusse, J.C. Carrie / jean_christophe.carrie@dell.com , S. Beaufils, M. Delalandre) pour établir une solution. Il a été remonté: 
+- que le processeur W-2295 était configuré en 4 "memory channels" [1],
+- que le processeurs W-2295 était en architecture Cascade Lake (CLX) [1-3],
+- que les processeurs CLS supportaient des configurations de 16, 32, 64 Go [4],
+- que la machine disposait de 8 slots mémoire [2], 
+- que la carte mère ne supportait que des DDR4 [2],
+- que les mémoires RDIMM étaient recommandées sur les stations de travail [5], 
+- qu'il n'était pas recommandé d'installer une double configuration mémoire (e.g. 64 Go type 1 + 64 Go type 2),
+- que le système d'exploitation Windows (version Windows 10 Éducation / 21H2) supportait jusqu'à 2 To de RAM [6].
+
+Il a été noté que la machine étaient configurée à date en 4x 16 Go de RAM DDR4 ECC (Error-Correcting Code) répondant à ces spécifications. Il a donc été convenu de réviser la RAM selon trois configurations possibles:
+a. 128 Go: 4x32 Go DDR4/RDIMM,
+b. 256 Go: 8x32 Go DDR4/RDIMM,
+c. 256 Go: 4x64 Go DDR4/RDIMM.
+
+Une demande de devis DELL a été envoyée à C. Barbusse, J.C. Carrie les 10, 12 et 16/6. Pour les besoins, les numéros de service tag (étiquette sur la partie haute de la machine) et version systèmes ont été demandés / extraits (cf. ci-dessous). Le devis DELL a été reçu le 17/06, les configurations et montants suivants ont été extraits: 
+32 Go   (1x32)	DDR4/RDIMM	288€ HT
+128 Go  (4x32)	DDR4/RDIMM	1158€ HT
+256 Go	(8x32)	DDR4/RDIMM	2300€ HT
+
+64 Go    (1x32)	DDR4/RDIMM	568€ HT
+128 Go	(2x64)	DDR4/RDIMM	1135€ HT
+256 Go	(4x64)	DDR4/RDIMM	2270€ HT
+
+Un ticket Pal n°97719 a été ouvert le 10/06 pour suivi.
+
+[1] Intel® Xeon® W-2295 Processor https://ark.intel.com/ 
+[2] Skylake  https://en.wikipedia.org/  
+[3] Cascade Lake serie X or L (CSL /  CLX) https://en.wikipedia.org/
+[4] Dell Precision 5820 Fixe Manuel du propriétaire / Configuration de la mémoire 
+https://www.dell.com/support/manuals/fr-fr/precision-5820-workstation/precision_5820_om_pub/configuration-de-la-m%c3%a9moire?guid=guid-ce1561c8-88a9-45e3-bc3b-762cbb37e073&lang=fr-fr 
+[5] DIMM vs UDIMM vs RDIMM vs SODIMM vs CUDIMM : Quelle est la différence ? https://www.corsair.com/
+[6] How much RAM does your Windows 10 PC need? https://www-zdnet-com.translate.goog/
+-------------
+Édition		Windows 10 Éducation
+Version		21H2 
+-------------
+Dell Precision 5820
+ST	7D06NQ3
+STE	16023847323 
+Rq. ST is service Tag, STE is Service Tag Express ¶

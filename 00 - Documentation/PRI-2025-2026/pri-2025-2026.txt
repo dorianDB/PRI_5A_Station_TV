@@ -1,0 +1,16 @@
+Transcription audio haute performance sur station TV
+Etudiant: ...
+
+Ce sujet s'inscrit dans le cadre du projet station TV [1] développé depuis 2019 par le Laboratoire LIFAT. Le projet station TV a pour objectif le développement de nouveaux services numériques autour de la Télévision, du Replay et d'Internet. La station TV est une plateforme de calcul parallèle pour le traitement automatique des chaînes de télévision de la TNT. En dehors du développement de la plateforme elle-même, le projet station TV recouvre aujourd'hui de multiples services pour la capture smart de vidéos et d'images, la détection de publicité, l'analytics TV, le fact-checking et le scraping Web de données TV. 
+
+Dans ce sujet, on s'intéresse en particulier au problème de transcription audio. La transcription audio (ou "Speech To Text" STT) consiste à convertir des fichiers audio en données textuelles (ASCII ou CSV). La station TV produit de nombreuses données audio complexes aussi la solution STT se doit d'être robuste et à l'échelle. Il existe de nombreux outils STT, ceux-ci peuvent être caractérisés par leur qualité / performance de transcription, adéquation au langage et complexité de traitement (besoin en ressources de calcul et mémoire). Récemment, le projet station TV a mis en place une solution de transcription à l'échelle [2] basée sur l'outil STT Whisper [3]. Cette solution permet des transcriptions à l'échelle avec de larges débits selon la qualité de transcription désirée. Néanmoins, les performances tendent à saturer à très hautes qualités compte-tenu des besoins mémoire et limite de performances de la machine utilisée. 
+
+On se propose d'étendre la solution sur différents aspects dans ce sujet:
+- évolution de la machine DELL 5820 en configuration 256 Go RAM ECC,
+- test de transcription à l'échelle sur hauts modèles (small, medium, large) sur la base du protocole défini en [2],
+- mise en place de métriques QoS pour vérification des transcriptions,
+- préparation d'une campagne de transcription à très haute échelle en modèle run / batch. 
+
+[1] M. Delalandre. The TV Workstation project: a research scope http://mathieu.delalandre.free.fr/talks/TVWorkstation.pdf 
+[2] T. Bourdeau. Capture audio large échelle et transcription
+[3] Whisper Open AI https://openai.com/
