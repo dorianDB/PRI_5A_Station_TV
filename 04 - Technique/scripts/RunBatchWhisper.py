@@ -11,6 +11,7 @@ import sys
 import argparse
 import yaml
 import time
+import os
 from pathlib import Path
 from multiprocessing import Process
 from typing import List
@@ -22,6 +23,8 @@ from core.transcription import WhisperTranscriber
 from core.affinity import CPUAffinityManager, Audio
 from qos.monitor import SystemMonitor
 from qos.metrics import MetricsCalculator
+from qos.power_monitor import PowerMonitor
+from qos.reporter import QoSReporter
 from utils.logger import setup_logger
 from utils.file_handler import FileHandler
 
@@ -80,10 +83,18 @@ def process_audio_files_on_core(
     # Traiter chaque fichier
     for i, audio in enumerate(audio_list, 1):
         try:
-            logger.info(
-                f"Processus {core_index}: [{i}/{len(audio_list)}] "
-                f"Traitement de {Path(audio.path).name}"
-            )
+            filename = Path(audio.path).name
+            
+            # Log de début de traitement
+            logger.info("")
+            logger.info("=" * 80)
+            logger.info(f"PROCESSUS {core_index} | Fichier {i}/{len(audio_list)} | Progression: {i/len(audio_list)*100:.1f}%")
+            logger.info("=" * 80)
+            logger.info(f"Fichier   : {filename}")
+            logger.info(f"Durée     : {audio.duree / 60:.2f} min ({audio.duree:.0f}s)")
+            logger.info(f"Chemin    : {audio.path}")
+            logger.info("-" * 80)
+            logger.info("Démarrage de la transcription...")
             
             start_time = time.time()
             
@@ -96,6 +107,7 @@ def process_audio_files_on_core(
             )
             
             processing_time = time.time() - start_time
+            throughput = audio.duree / processing_time if processing_time > 0 else 0
             
             # Ajouter aux métriques
             if metrics_calculator:
@@ -107,10 +119,18 @@ def process_audio_files_on_core(
                     success=success
                 )
             
+            # Log de fin de traitement
             if success:
-                logger.info(f"✅ Succès: {Path(audio.path).name} ({processing_time:.2f}s)")
+                logger.info("-" * 80)
+                logger.info(f"[SUCCES] Processus {core_index} | {filename}")
+                logger.info(f"   Temps traitement : {processing_time:.2f}s")
+                logger.info(f"   Throughput       : {throughput:.2f}x temps réel")
+                logger.info(f"   Restant          : {len(audio_list) - i} fichiers")
+                logger.info("=" * 80)
             else:
-                logger.error(f"❌ Échec: {Path(audio.path).name}")
+                logger.error("-" * 80)
+                logger.error(f"[ECHEC] Processus {core_index} | {filename}")
+                logger.error("=" * 80)
                 
         except Exception as e:
             logger.error(f"Erreur lors du traitement de {audio.path}: {str(e)}")
@@ -149,8 +169,46 @@ def lancer_traitement_batch(config: dict, metrics_calculator: MetricsCalculator)
     nb_processus = config.get('hardware', {}).get('max_parallel_processes', 3)
     logger.info(f"Nombre de processus parallèles: {nb_processus}")
     
-    # Répartition avec algorithme glouton
-    listes_audio = CPUAffinityManager.equilibrage_charge(liste_audios, nb_processus)
+    # Regrouper les fichiers par dossier parent (Coeur1, Coeur2, ...)
+    import re
+    fichiers_par_dossier = {}
+    for audio in liste_audios:
+        dossier_parent = Path(audio.path).parent.name
+        if dossier_parent not in fichiers_par_dossier:
+            fichiers_par_dossier[dossier_parent] = []
+        fichiers_par_dossier[dossier_parent].append(audio)
+    
+    # Détecter le mode "dossiers Coeur"
+    noms_dossiers = list(fichiers_par_dossier.keys())
+    mode_coeur = any("coeur" in d.lower() for d in noms_dossiers) and len(noms_dossiers) > 1
+    
+    if mode_coeur:
+        # Tri naturel (Coeur1, Coeur2, ..., Coeur10, ..., Coeur30)
+        def natural_sort_key(s):
+            return [int(t) if t.isdigit() else t.lower() for t in re.split(r'(\d+)', s)]
+        
+        dossiers_tries = sorted(noms_dossiers, key=natural_sort_key)
+        
+        # Limiter au nombre de processus configuré
+        if len(dossiers_tries) > nb_processus:
+            logger.warning(
+                f"{len(dossiers_tries)} dossiers Coeur trouvés mais max_parallel_processes={nb_processus}. "
+                f"Seuls Coeur1 à Coeur{nb_processus} seront traités."
+            )
+            dossiers_tries = dossiers_tries[:nb_processus]
+        
+        logger.info(f"Mode 'Coeurs' détecté : {len(dossiers_tries)} dossiers -> {len(dossiers_tries)} processus")
+        
+        listes_audio = []
+        for i, nom_dossier in enumerate(dossiers_tries):
+            fichiers = fichiers_par_dossier[nom_dossier]
+            duree_totale = sum(a.duree for a in fichiers) / 3600
+            logger.info(f"  Processus {i+1} -> {nom_dossier} ({len(fichiers)} fichiers, {duree_totale:.1f}h)")
+            listes_audio.append(fichiers)
+    else:
+        # Répartition classique avec algorithme glouton
+        logger.info("Mode classique : équilibrage de charge par durée")
+        listes_audio = CPUAffinityManager.equilibrage_charge(liste_audios, nb_processus)
     
     # Configuration des cœurs CPU
     cpu_affinity = config.get('whisper', {}).get('cpu_affinity', [])
@@ -230,10 +288,26 @@ def main():
         return
     
     logger.info(f"\n{len(fichiers_audio)} fichiers audio trouvés")
+    logger.info("\nLISTE DES FICHIERS DETECTES:")
+    logger.info("-" * 80)
+    
+    # Afficher la liste des fichiers avec leur durée
+    total_duration = 0
+    for i, fichier in enumerate(fichiers_audio, 1):
+        filename = Path(fichier.chemin).name
+        duration_min = fichier.longueur / 60
+        total_duration += fichier.longueur
+        logger.info(f"  {i:3d}. {filename:60s} ({duration_min:6.2f} min)")
+    
+    total_hours = total_duration / 3600
+    logger.info("-" * 80)
+    logger.info(f"Durée audio totale : {total_hours:.2f} heures ({total_duration:.0f} secondes)")
+    logger.info("-" * 80)
     
     # Écrire le CSV
     csv_path = config.get('paths', {}).get('csv_filename', 'fichiers_audio.csv')
     FileHandler.ecrire_csv(fichiers_audio, csv_path)
+    logger.info(f"\nFichier CSV créé: {csv_path}")
     
     if args.scan_only:
         logger.info("Mode scan-only: arrêt après le scan des fichiers")
@@ -251,6 +325,7 @@ def main():
     # Démarrer le monitoring système (si activé)
     qos_enabled = config.get('qos', {}).get('enabled', True)
     monitor = None
+    power_monitor = None
     
     if qos_enabled:
         logger.info("\n" + "-" * 80)
@@ -262,6 +337,19 @@ def main():
         
         monitor = SystemMonitor(output_dir=output_dir, interval=interval)
         monitor.start()
+        
+        # Démarrer le monitoring énergétique
+        power_config = config.get('qos', {}).get('power', {})
+        if power_config.get('enabled', True):
+            logger.info("Démarrage du monitoring énergétique...")
+            power_monitor = PowerMonitor(
+                output_dir=output_dir,
+                interval=interval,
+                tdp_watts=power_config.get('tdp_watts'),
+                electricity_cost_per_kwh=power_config.get('cost_per_kwh', 0.18),
+                carbon_intensity=power_config.get('carbon_kg_per_kwh', 0.1)
+            )
+            power_monitor.start()
     
     try:
         # Lancer le traitement batch
@@ -280,6 +368,26 @@ def main():
         # Terminer la session de métriques
         metrics_calculator.end_session()
         
+        # IMPORT CRITIQUE: Recharger les métriques depuis les trackers
+        # Car les processus enfants ont leurs propres instances de MetricsCalculator
+        trackers_dir = config.get('paths', {}).get('trackers_dir', 'output/trackers')
+        # Si le chemin dans la config est relatif, on doit le rendre correct par rapport au root
+        # Dans process_audio_files_on_core, on utilise config.get('paths', {}).get('trackers_dir', 'trackers')
+        # Il faut s'assurer qu'on pointe au même endroit
+        if 'trackers_dir' in config.get('paths', {}):
+             trackers_dir = config.get('paths', {})['trackers_dir']
+        else:
+             trackers_dir = 'trackers'
+             
+        # Gérer les chemins relatifs/absolus
+        if not os.path.isabs(trackers_dir):
+            # Le script est lancé depuis la racine du projet normalement
+            pass 
+        
+        # On tente l'import
+        logger.info(f"Rechargement des métriques depuis {trackers_dir}...")
+        metrics_calculator.import_from_trackers(trackers_dir)
+        
         logger.info("\n" + "=" * 80)
         logger.info("TRAITEMENT TERMINÉ AVEC SUCCÈS")
         logger.info("=" * 80)
@@ -296,6 +404,64 @@ def main():
         logger.info(f"Throughput: {summary['throughput']:.2f}× temps réel")
         logger.info("-" * 80)
         
+        # Générer les graphiques et rapports (si activé dans la config)
+        if qos_enabled and config.get('qos', {}).get('generate_graphs', True):
+            logger.info("\n" + "=" * 80)
+            logger.info("GÉNÉRATION DES RAPPORTS ET GRAPHIQUES")
+            logger.info("=" * 80)
+            
+            output_dir = config.get('paths', {}).get('reports_dir', 'output/reports')
+            reporter = QoSReporter(output_dir=output_dir)
+            
+            # Graphique CPU
+            cpu_file = Path(output_dir) / "monitoring_cpu.csv"
+            if cpu_file.exists():
+                logger.info("\nGénération du graphique CPU...")
+                if reporter.plot_cpu_usage(str(cpu_file)):
+                    logger.info("✓ Graphique CPU généré")
+                else:
+                    logger.warning("⚠ Échec génération graphique CPU")
+            
+            # Graphique RAM
+            memory_file = Path(output_dir) / "monitoring_memory.csv"
+            if memory_file.exists():
+                logger.info("\nGénération du graphique RAM...")
+                if reporter.plot_memory_usage(str(memory_file)):
+                    logger.info("✓ Graphique RAM généré")
+                else:
+                    logger.warning("⚠ Échec génération graphique RAM")
+            
+            # Graphique I/O
+            io_file = Path(output_dir) / "monitoring_io.csv"
+            if io_file.exists():
+                logger.info("\nGénération du graphique I/O...")
+                if reporter.plot_io_usage(str(io_file)):
+                    logger.info("✓ Graphique I/O généré")
+                else:
+                    logger.warning("⚠ Échec génération graphique I/O")
+            
+            # Graphique de consommation énergétique
+            power_file = Path(output_dir) / "monitoring_power.csv"
+            if power_file.exists() and config.get('qos', {}).get('power', {}).get('enabled', True):
+                logger.info("\nGénération du graphique de consommation énergétique...")
+                power_graph = reporter.plot_power_usage(str(power_file))
+                if power_graph:
+                    logger.info("✓ Graphique énergétique généré")
+                else:
+                    logger.warning("⚠ Échec génération graphique énergétique")
+            
+            # Rapport de synthèse
+            if config.get('qos', {}).get('export_csv', True):
+                logger.info("\nGénération du rapport de synthèse...")
+                if reporter.generate_summary_report(summary):
+                    logger.info("✓ Rapport de synthèse généré")
+                else:
+                    logger.warning("⚠ Échec génération rapport")
+            
+            logger.info("\n" + "=" * 80)
+            logger.info(f"📊 Tous les rapports sont disponibles dans: {output_dir}")
+            logger.info("=" * 80)
+        
     except KeyboardInterrupt:
         logger.warning("\n⚠️ Interruption par l'utilisateur")
     except Exception as e:
@@ -306,6 +472,12 @@ def main():
             logger.info("\nArrêt du monitoring QoS...")
             monitor.stop()
             logger.info("✓ Monitoring arrêté")
+        
+        # Arrêter le monitoring énergétique
+        if power_monitor:
+            logger.info("\nArrêt du monitoring énergétique...")
+            power_summary = power_monitor.stop()
+            logger.info("✓ Monitoring énergétique arrêté")
 
 
 if __name__ == "__main__":

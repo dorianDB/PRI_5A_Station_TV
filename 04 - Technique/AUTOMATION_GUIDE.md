@@ -35,12 +35,6 @@ C'est tout ! Le script :
 cd C:\Users\Dorian\Desktop\stationtv
 python scripts/RunPipeline.py
 ```
-
-### Sur Linux/Ubuntu
-
-```bash
-cd /chemin/vers/stationtv
-python3 scripts/RunPipeline.py
 ```
 
 ---
@@ -49,13 +43,7 @@ python3 scripts/RunPipeline.py
 
 ### Avant le premier lancement
 
-**1. Copier le projet sur la DELL**
-```powershell
-# Depuis votre PC
-robocopy "C:\Users\Dorian\Desktop\stationtv" "\\DELL-SERVER\stationtv" /E /Z
-```
-
-**2. Sur la DELL, installer Python et dépendances**
+**1. Sur la DELL, installer Python et dépendances**
 ```powershell
 # Vérifier Python
 python --version  # Doit être 3.10+
@@ -65,7 +53,7 @@ cd C:\stationtv
 pip install -r requirements.txt
 ```
 
-**3. Configurer les chemins dans `config/default_config.yaml`**
+**2. Configurer les chemins dans `config/default_config.yaml`**
 ```yaml
 paths:
   input_audio_dir: "D:/TNT/bdd"  # Adapter selon la DELL
@@ -141,30 +129,6 @@ stationtv/
 │       ├── Tracker2.txt
 │       └── ...
 ```
-
----
-
-## ⏱️ Durée Estimée (DELL 256 Go, 36 threads)
-
-### Avec modèle MEDIUM
-
-| Volume Audio | Processus | Durée Estimée |
-|--------------|-----------|---------------|
-| 100h | 3 processus | ~24h (1 jour) |
-| 300h | 6 processus | ~36h (1.5 jour) |
-| 588h | 6 processus | ~70h (3 jours) |
-
-### Optimisations possibles
-
-**Pour accélérer** (avec 256 Go RAM) :
-```yaml
-hardware:
-  max_parallel_processes: 10  # Au lieu de 6
-```
-
-➡️ **588h en ~42 heures** (1.75 jour)
-
----
 
 ## 🔧 Options Avancées
 

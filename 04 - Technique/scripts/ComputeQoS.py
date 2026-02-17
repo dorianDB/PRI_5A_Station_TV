@@ -67,6 +67,14 @@ def main():
         logger.info("\nGénération du graphique RAM...")
         reporter.plot_memory_usage(str(memory_file))
     
+    # Graphique de consommation énergétique
+    power_file = session_dir / "monitoring_power.csv"
+    if power_file.exists():
+        logger.info("\nGénération du graphique consommation énergétique...")
+        reporter.plot_power_usage(str(power_file))
+    else:
+        logger.info("\nPas de données énergétiques disponibles (monitoring_power.csv introuvable)")
+    
     logger.info("\n" + "=" * 80)
     logger.info("✅ Rapports QoS générés avec succès")
     logger.info("=" * 80)
