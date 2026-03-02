@@ -1,0 +1,25 @@
+================================================================================
+RAPPORT QoS - STATION TV - TRANSCRIPTION AUDIO
+================================================================================
+
+RÉSUMÉ DE LA SESSION
+--------------------------------------------------------------------------------
+Durée de la session: 17.43 heures
+Nombre total de fichiers: 728
+Fichiers réussis: 728
+Fichiers échoués: 0
+Taux de réussite: 100%
+
+PERFORMANCE
+--------------------------------------------------------------------------------
+Durée audio totale traitée: 728.00 heures
+Temps de traitement total: 17.43 heures
+Throughput (Th): 41.77
+Temps moyen par fichier: 2581.19 secondes
+
+OBJECTIFS QoS
+--------------------------------------------------------------------------------
+✓ Taux de réussite 100% >= 99%
+✓ Traitement terminé avec succès
+
+================================================================================

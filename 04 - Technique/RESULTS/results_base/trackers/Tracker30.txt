@@ -1,0 +1,27 @@
+﻿=== Processus 30 - 25 fichiers ===
+
+audio601.mp3: 2938.32 secondes
+audio6010.mp3: 2526.42 secondes
+audio6011.mp3: 2561.28 secondes
+audio6012.mp3: 2531.09 secondes
+audio6013.mp3: 2512.98 secondes
+audio6014.mp3: 2507.01 secondes
+audio6015.mp3: 2603.84 secondes
+audio6016.mp3: 2729.2 secondes
+audio6017.mp3: 2600.09 secondes
+audio6018.mp3: 2599.93 secondes
+audio6019.mp3: 2601.16 secondes
+audio6020.mp3: 2647.57 secondes
+audio6021.mp3: 2620.75 secondes
+audio6022.mp3: 2566.18 secondes
+audio6023.mp3: 2757.48 secondes
+audio6024.mp3: 2568.82 secondes
+audio6025.mp3: 2540.61 secondes
+audio6026.mp3: 2537.66 secondes
+audio6027.mp3: 2543.38 secondes
+audio6028.mp3: 2711.01 secondes
+audio6029.mp3: 2527.32 secondes
+audio6030.mp3: 2547.75 secondes
+audio6031.mp3: 2499.81 secondes
+audio6032.mp3: 2496.3 secondes
+audio6033.mp3: 2566.77 secondes

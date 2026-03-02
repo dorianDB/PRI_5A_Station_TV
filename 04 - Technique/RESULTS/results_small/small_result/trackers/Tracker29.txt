@@ -1,0 +1,10 @@
+=== Processus 29 - 8 fichiers ===
+
+audio601.mp3: 11529.37 secondes
+audio6010.mp3: 10457.47 secondes
+audio6011.mp3: 11016.42 secondes
+audio6012.mp3: 4688.20 secondes
+audio6013.mp3: 9815.21 secondes
+audio6014.mp3: 9801.16 secondes
+audio6015.mp3: 10438.21 secondes
+audio6016.mp3: 10110.06 secondes

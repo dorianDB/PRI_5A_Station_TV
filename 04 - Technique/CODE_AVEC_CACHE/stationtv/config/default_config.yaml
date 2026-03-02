@@ -1,0 +1,206 @@
+# Station TV - Configuration par défaut
+# Dell Precision 5820 - 256 Go RAM - Xeon W-2295 (18 cores / 36 threads)
+
+# ========================================
+# CONFIGURATION MATÉRIELLE
+# ========================================
+hardware:
+  cpu_cores: 24              # Nombre de cœurs physiques
+  cpu_threads: 36            # Nombre de threads disponibles (total machine: Xeon W-2295)
+  max_parallel_processes: 30 # Nombre max de processus Whisper simultanés (1 par dossier Coeur)
+  ram_total_gb: 256          # RAM totale installée (Dell Precision 5820)
+  ram_max_usage_percent: 90  # Utilisation RAM maximale autorisée (%)
+
+# ========================================
+# CONFIGURATION WHISPER
+# ========================================
+whisper:
+  model: "medium"            # Modèle: tiny, base, small, medium, large
+  language: "fr"             # Langue principale (français)
+  device: "cpu"              # cpu ou cuda (GPU désactivé pour stabilité)
+  
+  # Répartition des cœurs par processus (1 thread/processus = 1 dossier Coeur)
+  # Processus N -> Dossier CoeurN -> Thread N-1
+  cpu_affinity:
+    - [0]   # Processus 1  -> Coeur1
+    - [1]   # Processus 2  -> Coeur2
+    - [2]   # Processus 3  -> Coeur3
+    - [3]   # Processus 4  -> Coeur4
+    - [4]   # Processus 5  -> Coeur5
+    - [5]   # Processus 6  -> Coeur6
+    - [6]   # Processus 7  -> Coeur7
+    - [7]   # Processus 8  -> Coeur8
+    - [8]   # Processus 9  -> Coeur9
+    - [9]   # Processus 10 -> Coeur10
+    - [10]  # Processus 11 -> Coeur11
+    - [11]  # Processus 12 -> Coeur12
+    - [12]  # Processus 13 -> Coeur13
+    - [13]  # Processus 14 -> Coeur14
+    - [14]  # Processus 15 -> Coeur15
+    - [15]  # Processus 16 -> Coeur16
+    - [16]  # Processus 17 -> Coeur17
+    - [17]  # Processus 18 -> Coeur18
+    - [18]  # Processus 19 -> Coeur19
+    - [19]  # Processus 20 -> Coeur20
+    - [20]  # Processus 21 -> Coeur21
+    - [21]  # Processus 22 -> Coeur22
+    - [22]  # Processus 23 -> Coeur23
+    - [23]  # Processus 24 -> Coeur24
+    - [24]  # Processus 25 -> Coeur25
+    - [25]  # Processus 26 -> Coeur26
+    - [26]  # Processus 27 -> Coeur27
+    - [27]  # Processus 28 -> Coeur28
+    - [28]  # Processus 29 -> Coeur29
+    - [29]  # Processus 30 -> Coeur30
+  
+  # Formats de sortie
+  output_formats:
+    txt: true                # Transcription texte brut
+    srt: true                # Sous-titres horodatés
+    csv: true                # Format tabulaire
+    json: true               # Format structuré avec métadonnées
+  
+  # Paramètres de transcription
+  word_timestamps: true      # Activer l'horodatage au niveau des mots
+  confidence_threshold: 0.6  # Seuil de confiance minimal (0.0-1.0)
+
+# ========================================
+# PRÉTRAITEMENT AUDIO
+# ========================================
+preprocessing:
+  enabled: true
+  
+  # Conversion audio
+  target_format: "wav"       # Format cible (wav)
+  sample_rate: 48000         # Fréquence d'échantillonnage (Hz)
+  channels: 1                # Mono (1) ou Stéréo (2)
+  bit_depth: 16              # PCM16
+  
+  # Segmentation
+  segment_duration_min: 5    # Durée minimale d'un segment (minutes)
+  segment_duration_max: 20   # Durée maximale d'un segment (minutes)
+  
+  # Nettoyage
+  remove_silence: true       # Supprimer les silences
+  silence_threshold_db: -40  # Seuil de détection du silence (dB)
+
+# ========================================
+# SUPERVISION & QoS
+# ========================================
+qos:
+  enabled: true
+  
+  # Monitoring temps réel - TESTS BATCH OPTIMISÉS
+  monitoring_interval: 10    # Intervalle entre mesures CPU/RAM (secondes) - 10s pour précision accrue
+  
+  # Métriques de performance (Tests batch: 24 fichiers × 1h × k=30 = 720h)
+  calculate_throughput: true     # Calculer le débit (heures audio / heure réelle)
+  calculate_wer: true            # Calculer le Word Error Rate
+  save_detailed_metrics: true    # Sauvegarder métriques détaillées
+  track_response_time: true      # Temps de réponse par fichier
+  track_cpu_per_process: true    # Charge CPU par processus Whisper
+  track_memory_per_process: true # Charge RAM par processus Whisper
+  track_io: true                 # Monitoring I/O disque (lecture/écriture)
+  
+  # Génération de rapports
+  generate_graphs: true      # Générer les graphiques CPU/RAM
+  export_csv: true           # Exporter les métriques en CSV
+  export_png: true           # Exporter les graphiques en PNG
+  
+  # Seuils d'alerte (optimisés pour ~90% CPU cible)
+  thresholds:
+    cpu_warning: 92          # Avertissement CPU > 92% (légèrement au-dessus de la cible)
+    cpu_critical: 98         # Critique CPU > 98% (proche saturation)
+    memory_warning: 80       # Avertissement RAM > 80%
+    memory_critical: 90      # Critique RAM > 90%
+  
+  # Alertes
+  alert_on_high_memory: true # Alerte si RAM > 95%
+  alert_on_cpu_throttle: true # Alerte si CPU throttling détecté
+  
+  # Monitoring énergétique
+  power:
+    enabled: true              # Activer le monitoring de consommation
+    tdp_watts: null            # TDP processeur en Watts (null = auto-détection)
+    cost_per_kwh: 0.18         # Coût électricité en €/kWh (moyenne France)
+    carbon_kg_per_kwh: 0.1     # Intensité carbone kg CO2/kWh (France 2024)
+
+# ========================================
+# EXPORT & INTÉGRATION
+# ========================================
+export:
+  # Encodage
+  encoding: "utf-8"
+  
+  # Métadonnées
+  include_metadata: true     # Inclure métadonnées (chaîne, date, heure)
+  metadata_format: "json"    # Format des métadonnées
+  
+  # Sauvegarde automatique
+  auto_backup: true
+  backup_interval_hours: 24  # Sauvegarde toutes les 24h
+  
+  # Intégration Station TV
+  stationtv_integration: true
+  stationtv_index_prefix: "TNT_" # Préfixe pour l'indexation
+
+# ========================================
+# CHEMINS & RÉPERTOIRES
+# ========================================
+paths:
+  # Répertoire de base (à adapter selon l'environnement)
+  base_dir: "C:/Users/Dorian/Desktop/stationtv"
+  
+  # Entrées
+  input_audio_dir: "C:/Users/Dorian/Documents/Perso/PRI/StationTV/app/bdd"     # Base de données audio TNT
+  
+  # Sorties
+  output_dir: "C:/Users/Dorian/Desktop/stationtv/test_output"       # Répertoire de sortie principal
+  transcriptions_dir: "C:/Users/Dorian/Desktop/stationtv/test_output/transcriptions"
+  reports_dir: "C:/Users/Dorian/Desktop/stationtv/test_output/reports"
+  logs_dir: "C:/Users/Dorian/Desktop/stationtv/test_output/logs"
+  trackers_dir: "C:/Users/Dorian/Desktop/stationtv/test_output/trackers"
+  
+  # Temporaire
+  temp_dir: "C:/Users/Dorian/Desktop/stationtv/test_output/temp"
+  preprocessed_dir: "C:/Users/Dorian/Desktop/stationtv/test_output/temp/preprocessed"
+  
+  # Sauvegarde
+  backup_dir: "C:/Users/Dorian/Desktop/stationtv/test_output/backup"
+  
+  # CSV de travail
+  csv_filename: "C:/Users/Dorian/Desktop/stationtv/fichiers_audio.csv"
+
+# ========================================
+# LOGGING
+# ========================================
+logging:
+  level: "INFO"              # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  
+  # Fichiers de log
+  console_output: true
+  file_output: true
+  log_file: "output/logs/stationtv.log"
+  
+  # Rotation
+  max_log_size_mb: 100
+  backup_count: 5
+
+# ========================================
+# BATCH PROCESSING
+# ========================================
+batch:
+  batch_size: 24             # Nombre de fichiers par batch (24 fichiers × 1h pour tests)
+  max_file_duration_hours: 1 # Durée maximale d'un fichier (heures) - fichiers de 1h
+  
+  # Gestion des erreurs
+  retry_on_error: true
+  max_retries: 3
+  retry_delay_seconds: 60
+  
+  # Limites par processus
+  max_files_per_process: 0   # Nombre max de fichiers par processus (0 = illimité)
+  
+  # Priorités
+  sort_by_duration: true     # Trier par durée (algorithme glouton)

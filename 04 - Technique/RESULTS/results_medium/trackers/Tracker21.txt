@@ -1,0 +1,7 @@
+﻿=== Processus 21 - 5 fichiers ===
+
+audio601.mp3: 26419.84 secondes
+audio6010.mp3: 24662.47 secondes
+audio6011.mp3: 24641.91 secondes
+audio6012.mp3: 24654.41 secondes
+audio6013.mp3: 23357.82 secondes
